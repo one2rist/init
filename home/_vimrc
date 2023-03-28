@@ -1,0 +1,417 @@
+" ==============================================
+" HELP
+" ==============================================
+
+" apply changes in vimrc:
+" :so %
+
+" SEARCH AND REPLACE
+" :%s/foo/bar/gci flags: %=all file, g=global (all matches), c=confirm, i=case
+
+" SEARCH IN FILES RECURSE FROM PWD
+" :vimgrep /some text/gj ./**/* | copen
+" grep --exclude={*.o,*.so} -rnw -e assignStructFieldFromJSON | grep -v 'isError' &> assignStructFieldFromJSON
+
+" COPY TO SYSTEM REGISTER
+" "+y{optional move} or
+" "*y - another system register
+
+" "+p - paste from system clipb
+" ":p - paste last command
+" "/p - paste last search
+" "1y - copy  to   1      register
+" "1p - paste from 1      register
+
+" SYSTEM USEFUL COMMANDS
+" sudo kill $(sudo lsof -t -i:20351) // kill em all who using port(address) 20351
+
+set exrc
+set secure
+set number
+set nocp
+execute pathogen#infect()
+
+syntax on
+filetype plugin indent on
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set linebreak
+set modeline
+set smartindent
+"set noexpandtab
+
+set incsearch
+set hlsearch
+set hidden
+set ignorecase
+" set splitright
+set complete-=i
+
+
+" turn of entering Ex mode
+map q: <Nop>
+nnoremap Q <nop>
+
+
+" ============================================
+" Function keys commands
+" ============================================
+
+" jk = esc
+inoremap jk <esc>
+" cursor is always in the middle of the page:
+" nnoremap j jzz
+" nnoremap k kzz
+nnoremap <space> }zz
+nnoremap <CR> {zz
+nnoremap <TAB> $
+nnoremap * *N
+nnoremap ttt O// TODO<ESC>
+
+" open-close NerdTree
+map <c-n> :NERDTreeToggle<cr>
+
+" swith .h and .cpp
+nnoremap gH :call CppToH()<CR>
+nnoremap gh :call SwitchBuff()<CR>
+nnoremap gP :call CppToHPP()<CR>
+
+" go to tab number #
+nnoremap g1 :tabn 1<CR>
+nnoremap g2 :tabn 2<CR>
+nnoremap g3 :tabn 3<CR>
+nnoremap g4 :tabn 4<CR>
+nnoremap g5 :tabn 5<CR>
+nnoremap g6 :tabn 6<CR>
+nnoremap g7 :tabn 7<CR>
+nnoremap g8 :tabn 8<CR>
+nnoremap g9 :tabn 9<CR>
+nmap <leader><leader> :ls<CR>
+nmap <leader>1  :buf  1<CR>:only<CR>
+nmap <leader>2  :buf  2<CR>:only<CR>
+nmap <leader>3  :buf  3<CR>:only<CR>
+nmap <leader>4  :buf  4<CR>:only<CR>
+nmap <leader>5  :buf  5<CR>:only<CR>
+nmap <leader>6  :buf  6<CR>:only<CR>
+nmap <leader>7  :buf  7<CR>:only<CR>
+nmap <leader>8  :buf  8<CR>:only<CR>
+nmap <leader>9  :buf  9<CR>:only<CR>
+nmap <leader>10 :buf 10<CR>:only<CR>
+
+" move tab to the left/right
+nnoremap g- :tabm -1<CR>
+nnoremap g= :tabm +1<CR>
+
+" navigating woindows up down left right
+nmap <silent> <C-k> :wincmd k<CR>
+nmap <silent> <C-j> :wincmd j<CR>
+nmap <silent> <C-h> :wincmd h<CR>
+nmap <silent> <C-l> :wincmd l<CR>
+
+" leader-commands, leader is \-key
+nnoremap <leader><CR> i<CR><esc>
+nnoremap <leader>/ I//<esc>
+nnoremap <leader>? 0f/xx
+
+vnoremap <leader>{ di{}<esc>P
+
+" add/remove space near braces
+nnoremap <leader><space> %a<space><esc>%%i<space><esc>
+nnoremap <leader><backspace> %lx%%hx
+
+nnoremap <leader>{ i{ <esc>ea }<esc>
+nnoremap <leader>( i( <esc>ea )<esc>
+nnoremap <leader>[ i[ <esc>ea ]<esc>
+nnoremap <leader>< i< <esc>ea ><esc>
+nnoremap <leader>" i"<esc>ea "<esc>
+nnoremap <leader>' hxxhea <esc>p
+
+nnoremap <leader>> 20<c-w>>
+nnoremap <leader>< 20<c-w><
+
+" delete
+nnoremap d<space> dt<space>
+nnoremap d<cr> d$
+
+" change working dir to home
+nmap chd :call SetMainPath()<cr>
+" change working dir to home
+nmap chc :call SetMainCommit()<cr>
+" change working dir to current file location
+nmap CD :cd %:p:h<CR>
+" copy file path to buffer
+nmap CP :put =expand('%:p')<CR>
+" gen header
+nmap HE ggO#ifndef <esc>:put = expand('%:t:r')<CR>VUkJAH<esc>o#define <esc>:put = expand('%:t:r')<CR>VUkJAH<CR><esc>Go#endif //<esc>:put = expand('%:t:r')<CR>VUkJAH<esc>O<esc>gg
+
+" vim register goto system register (like ctrl-c):
+nnoremap <leader>c :let @+=@"<CR>
+" call git diff on the current file, arg let u specify the commit:
+nnoremap <leader>d :call GitDiff("HEAD^!")
+nnoremap <leader>D :call GitDiff(@")
+" send the list of files under commit to the global file:
+nnoremap <leader>g :call SystemToFile("tabe", "git diff-tree --name-only -r HEAD")
+nnoremap <leader>G :call GitFileHistory()
+" turn off highlighting:
+nnoremap <leader>h :nohlsearch<CR>
+" grep recursively the word and send results to the global file:
+nnoremap <leader>f :call SystemToFile("tabe", "grep --include='*.h' -rni -e ".@")
+nnoremap <leader>F :call SystemToFile("tabe", "grep --include={*.h,*.hpp,*.cpp} -rni -e helo")
+" locate file and send results to global file:
+nnoremap <leader>l :call LocateFile("*".@")
+nnoremap <leader>L :call LocateFile("*")
+" copy current file path to vim register:
+nnoremap <leader>p :call SetMainPath()<cr>:let @"=@%<CR>
+nnoremap <leader>P :call SetMainPath()<cr>:let @"=getcwd()."/".@%<CR>
+"
+nnoremap <leader>q :call SystemToFile("tabe", "grep --include='*.qml' -rni -e ".@")
+nnoremap <leader>Q :call SystemToFile("tabe", "grep --include='*.qml' -rni -e helo")
+" close all windows of this file
+nnoremap <leader>r :call CloseOtherwindowsOfThis("e")
+" locate file and send results to global file:
+nnoremap <leader>s :call SystemToFile("tabe", "locate -i $(pwd)**")
+nnoremap <leader>S :call SystemToFile("tabe", "locate -i ".@")
+" system register goto vim register (like ctrl-v):
+nnoremap <leader>v :let @"=@+<CR>
+nnoremap <leader>w :set nowrap<CR>
+nnoremap <leader>W :set wrap<CR>
+
+nnoremap <leader>y 0y%:let @+=@"<CR>
+
+" ============================================
+" Function keys commands
+" ============================================
+
+" F2 save file:
+nnoremap <F2> <esc>:w<CR>
+inoremap <F2> <esc>:w<CR>
+" F3 open default vimrc
+nnoremap <F3> <esc>:tabe ~/.vimrc<CR>
+inoremap <F3> <esc>:tabe ~/.vimrc<CR>
+
+" F4 close file
+nnoremap <F4> <ESC>:q<CR>
+inoremap <F4> <ESC>:q<CR>
+
+" F5
+nnoremap <s-F5> <ESC>:wa<CR>:call OpenFileSplit()<CR>
+inoremap <s-F5> <ESC>:wa<CR>:call OpenFileSplit()<CR>
+nnoremap <F5> <ESC>:wa<CR>:call OpenFile()<CR>
+inoremap <F5> <ESC>:wa<CR>:call OpenFile()<CR>
+nnoremap <c-F5> <ESC>:wa<CR>:call TabeFile()<CR>
+inoremap <c-F5> <ESC>:wa<CR>:call TabeFile()<CR>
+nnoremap <a-F5> <ESC>:wa<CR>:call OpenGitDiff()<CR>
+inoremap <a-F5> <ESC>:wa<CR>:call OpenGitDiff()<CR>
+" F6
+nnoremap <F6> <ESC>:wa<CR>:call OpenSearch("e")<CR>
+inoremap <F6> <ESC>:wa<CR>:call OpenSearch("e")<CR>
+nnoremap <c-F6> <ESC>:wa<CR>:call OpenSearch("tabe")<CR>
+inoremap <c-F6> <ESC>:wa<CR>:call OpenSearch("tabe")<CR>
+" F7
+nmap <F7> <ESC>:wa<CR>:call OpenNotes("e")<CR>
+imap <F7> <ESC>:wa<CR>:call OpenNotes("e")<CR>
+nmap <c-F7> <ESC>:wa<CR>:call OpenNotes("tabe")<CR>
+imap <c-F7> <ESC>:wa<CR>:call OpenNotes("tabe")<CR>
+" F8
+nmap <F8> <ESC>:wa<CR>:call OpenPaths("e")<CR>
+imap <F8> <ESC>:wa<CR>:call OpenPaths("e")<CR>
+nmap <c-F8> <ESC>:wa<CR>:call OpenPaths("tabe")<CR>
+imap <c-F8> <ESC>:wa<CR>:call OpenPaths("tabe")<CR>
+
+" F9
+nnoremap <c-F9> <ESC> :wa <CR> :! kotlinc % -include-runtime -d run.jar && java -jar run.jar<CR>
+
+" F10
+nmap <F10> <ESC>:wa<CR>:call RunLine()<CR>
+" F11 compile and run main.cpp
+nnoremap <c-F11> <ESC> :wa <CR> :! g++ -std=c++11 -g -w -Werror -pedantic-errors % -o ~/run -lpthread && ~/run <CR>
+nnoremap <c-F12> <ESC> :wa <CR> :! g++ -std=c++17 -g -w -Werror -pedantic-errors % -o ~/run -lpthread && ~/run <CR>
+"nmap <F12> :wa <CR> :! g++ -std=c++11 -I/usr/local/boost_1_65_1 main.cpp -o run -L/usr/local/boost_1_65_1/stage/lib/ -lboost_system -lboost_thread -lboost_chrono -pthread -lboost_date_time && ./run<CR>
+
+
+" XXXXXXXXXXXXXXXXXXXX:
+"                      COLORSCEME:
+" XXXXXXXXXXXXXXXXXXXX:
+
+syntax enable
+set background=dark
+let g:solarized_termcolors=256
+colorscheme solarized
+
+" show white caracters: :set list, :set nolist
+" set listchars=eol:¬,tab:>·,trail:-,extends:>,precedes:<,space:·
+
+
+" highlight trealing white space
+highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+match ExtraWhitespace /\s\+$/
+nnoremap <C-y> :%s/\s\+$//gc<CR>
+
+
+
+" XXXXXXXXXXXXXXXXXXXX:
+"                      AUTOCOMMANDS:
+" XXXXXXXXXXXXXXXXXXXX:
+
+" open a NERDTree automatically when vim starts up if no files were specified
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd VimEnter * call Initvim()
+
+" Retabulate the whole file when open it
+autocmd BufReadPost * :%retab
+
+" Disable automatic comment insertion:
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+
+" XXXXXXXXXXXXXXXXXXXX:
+"                      FUNCTIONS:
+" XXXXXXXXXXXXXXXXXXXX:
+
+let g:vimsearch = "~/.vim/search.temp"
+let g:vimnotes  = "~/.vim/notes.temp"
+let g:vimpaths  = "~/.vim/paths.temp"
+let g:vimgitdiff= "~/.vim/gitdiff.temp"
+let g:lastfilename = ""
+let g:maincommit= "HEAD"
+
+function! Initvim()
+    let g:mainpath = getcwd()
+endfun
+
+nnoremap <leader># :call Get40random()<CR>
+
+function! Get40random()
+exe "r! cat /dev/urandom | tr -dc 'A-Z' | fold -w 40 | head -n 1"
+endfun
+
+function! CppToH()
+
+  if match(expand("%"), '\.cpp') > 0
+      exe "e %:r.h"
+  elseif match(expand("%"), '\.h') > 0
+      exe "e %:r.cpp"
+  endif
+
+endfun
+
+function! CppToHPP()
+
+  if match(expand("%"), '\.cpp') > 0
+      exe "e %:r.hpp"
+  elseif match(expand("%"), '\.hpp') > 0
+      exe "e %:r.cpp"
+  endif
+
+endfun
+
+function! SwitchBuff()
+
+  if match(expand("%"), '\.cpp') > 0
+      exe "w"
+      exe "buffer" expand("%:r").".h"
+  elseif match(expand("%"), '\.h') > 0
+      exe "w"
+      exe "buffer" expand("%:r").".cpp"
+  endif
+
+endfun
+
+function! SetMainPath()
+    exe "cd" g:mainpath
+endfun
+
+function! SetMainCommit()
+    let g:maincommit = expand("<cword>")
+endfun
+
+function! OpenSearch(opencmnd)
+    exe a:opencmnd g:vimsearch
+    exe "edit"
+endfun
+
+function! OpenNotes(opencmnd)
+    exe a:opencmnd g:vimnotes
+    exe "edit"
+endfun
+
+function! OpenPaths(opencmnd)
+    exe a:opencmnd g:vimpaths
+    exe "edit"
+endfun
+
+function! RunLine()
+    let l:path = getline(".")
+    exe "!" l:path
+endfun
+
+function! OpenFileSplit()
+    let l:path = getline(".")
+    exe "wincmd k"
+    exe "vsplit" split(l:path, ":")[0]
+endfun
+
+function! OpenFile()
+    exe "only"
+    let l:path = getline(".")
+    exe "split" split(l:path, ":")[0]
+    exe "resize" 47
+endfun
+
+function! TabeFile()
+    let l:path = getline(".")
+    exe "tabe" split(l:path, ":")[0]
+endfun
+
+function! OpenGitDiff()
+    exe "only"
+    let l:path = split(getline("."), ":")[0]
+    exe "split" l:path
+    exe "resize" 50
+    call GitDiff(g:maincommit . "^!")
+endfun
+
+function! SystemToFile(open, command)
+    call SystemToTheFile(a:command, a:open, g:vimsearch)
+endfun
+
+function! SystemToTheFile(command, open, filename)
+    call system(a:command . " > " . a:filename . " 2>&1")
+    exe  a:open a:filename
+    exe "edit"
+endfun
+
+function! LocateFile(tail)
+    " let l:path = getcwd() . "*" . expand("<cword>")
+    call system("locate -i " . getcwd() . a:tail . " > " . g:vimsearch . " 2>&1")
+    exe "tabe" g:vimsearch
+endfun
+
+function! GitDiff(head)
+    call SystemToTheFile("git diff " . a:head . " " . expand("%"), "vs", g:vimgitdiff)
+endfun
+
+function! GitFileHistory()
+    let g:lastfilename = expand("%")
+    call SystemToFile("tabe", "git log --oneline --pretty=format:'%h   %<(60,trunc)%s %<(12,trunc)%cr %<(20,trunc)%an%d' " . g:lastfilename)
+endfun
+
+function! OpenGitFileHistory()
+    exe "only"
+    let l:commit = split(getline("."), " ")[0]
+    exe "split" g:lastfilename
+    call GitDiff(l:commit . "^!")
+    exe "resize" 50
+endfun
+
+function! CloseOtherwindowsOfThis(opencmnd)
+    let l:path = @%
+"    exe "bd" l:path
+    exe "bw" bufnr("%")
+    exe a:opencmnd l:path
+    exe "edit"
+endfun

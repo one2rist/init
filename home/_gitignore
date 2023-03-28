@@ -1,0 +1,7 @@
+*.log
+*.temp
+*.swp
+*.swn
+*.swo
+*.db
+*.thumbnails

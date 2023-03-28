@@ -1,0 +1,26 @@
+[core]
+    excludesfile = ~/.gitignore
+    editor = 'vim'
+[user]
+    name = Igor Bakulin
+    email = igorbakulin@gmail.com
+[httpd]
+    sslVersion = tlsv1.2
+[push]
+    default = matching
+[alias]
+    ib = log --pretty=format:'%C(auto)%h%Creset   %<(60,trunc)%C("#cccccc")%s %Cgreen%<(12,trunc)%cr %C(bold blue)%<(20,trunc)%an%Creset%C(auto)%d%Creset' --abbrev-commit --date=relative --graph --author=Bakulin
+    ll = log --pretty=format:'%C(auto)%h%Creset   %<(60,trunc)%C("#cccccc")%s %Cgreen%<(12,trunc)%cr %C(bold blue)%<(20,trunc)%an%Creset%C(auto)%d%Creset' --abbrev-commit --date=relative --graph
+    lll = log --pretty=format:'%C(auto)%h%Creset   %<(60,trunc)%C("#cccccc")%s %Cgreen%<(12,trunc)%cr %C(bold blue)%<(20,trunc)%an%Creset%C(auto)%d%Creset%n%+b%n' --abbrev-commit --date=relative
+    sub = submodule foreach git
+    au = add -u
+    ca = commit --amend
+    fa = fetch --all
+    dc = diff --cached
+    dh = diff HEAD~1
+    pp = pull --rebase
+    su = submodule update --init --force --recursive
+[color]
+    ui = auto
+[http]
+    sslVerify = false
