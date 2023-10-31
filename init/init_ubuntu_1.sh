@@ -1,9 +1,7 @@
 echo ""
 echo "installing git"
 echo ""
-sudo apt install git
-
-echo ""
+sudo apt install gitecho ""
 echo "installing chrome"
 echo ""
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
