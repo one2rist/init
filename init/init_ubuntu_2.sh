@@ -9,6 +9,7 @@ sudo apt-get -y install unityhub
 echo ""
 echo "installing dev tools"
 echo ""
+sudo apt -y install curl
 sudo apt -y install build-essential
 sudo apt -y install cmake
 sudo apt -y install gitk
