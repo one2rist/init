@@ -29,6 +29,7 @@ sudo apt -y install pinta
 sudo apt -y install kazam
 sudo apt -y install htop
 sudo apt -y install adb
+sudo apt -y install plocate
 
 sudo snap install slack --classic
 sudo snap install code --classic
