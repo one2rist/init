@@ -13,6 +13,8 @@ sudo apt -y install curl
 sudo apt -y install build-essential
 sudo apt -y install cmake
 sudo apt -y install gitk
+sudo apt -y install clang-format
+sudo apt -y install cmake-format
 
 echo ""
 echo "installing QT"

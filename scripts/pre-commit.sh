@@ -10,7 +10,7 @@ scope="git diff-index --cached --name-only HEAD"
 cd ${root}
 for file in `${scope} | grep -vE ${excpattern} | grep -iE ${srcpattern}` ; do
     f=${root}/${file}
-    clang-format-10 -i ${f}
+    clang-format -i ${f}
     echo >&2 "CLANG-FORMAT: ${f}"
     git add ${f}
 done

@@ -1,5 +1,8 @@
-cp ~/.gitconfig ./home/_gitconfig
-cp ~/.gitignore ./home/_gitignore
-cp ~/.vimrc     ./home/_vimrc    
+cp ~/.gitconfig         ~/init/home/_gitconfig
+cp ~/.gitignore         ~/init/home/_gitignore
+cp ~/.vimrc             ~/init/home/_vimrc    
+#cp ~/.clang-format      ~/init/home/_clang-format
 
-#git diff --no-index ./_vimrc ~/.vimrc
+
+cd ~/init
+git diff
