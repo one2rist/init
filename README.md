@@ -8,7 +8,7 @@ find . -type f -name "*.txt" -print0 | xargs -0 sed -i -e 's/foo/bar/g'
 
 ## SSH
 ### generate key:
-```
+```bash
 ssh-keygen -t ed25519 -C "me@gmail.com" 
 eval "$(ssh-agent -s)" 
 ssh-add ~/.ssh/id_ed25519
